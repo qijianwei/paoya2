@@ -1,0 +1,15 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "attach",
+            "preLaunchTask": "preAttach",
+            "name": "attach to brick",
+            "address": "localhost",
+            "port": 2507,
+            "localRoot": "E:\\Project2.0\\project-qq\\FindSister\\release\\qqwanyiwan",
+            "remoteRoot": "/sdcard/tencent/MobileQQ/Test"
+        }
+    ]
+}

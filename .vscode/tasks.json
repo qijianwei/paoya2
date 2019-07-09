@@ -1,0 +1,17 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "preAttach",
+            "type": "shell",
+            "command": "node \"C:\\Users\\Administrator\\.vscode\\extensions\\qqdev.qqextension-0.5.8\\resource\\scripts\\pre-attach.js\" \"C:\\Users\\Administrator\\.vscode\\extensions\\qqdev.qqextension-0.5.8\\resource\" \"E:\\Project2.0\\project-qq\\FindSister\\release\\qqwanyiwan\"",
+            "presentation": {
+                "reveal": "always"
+            },
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
