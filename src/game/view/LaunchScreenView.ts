@@ -9,39 +9,47 @@ export default class LaunchScreenView extends Laya.View {
     private _imgProgressMask: Laya.Sprite
     private _lblProgress: Laya.Label
     private _progress: number
+    private _portrait:Boolean
+    private _imgProgressBg: Laya.Image
     constructor() {
         super()
         this.setup()
     }
     setup() {
-        this.size(750,1334)
         let box = new Laya.Box()
-        box.size(750,1334)
+        if(this._portrait){
+            this.size(750,1334)
+            box.size(750,1334)
+        }else{
+            this.size(1334, 750);
+            box.size(1334, 750);
+        }       
         box.cacheAs = 'normal'
         this.addChild(box)
-        let imgBg = new Laya.Image('local/loading/bg.png')
+        let imgBg = new Laya.Image('local/loading/bg.jpg')
+        imgBg.x=-150;
         box.addChild(imgBg)
 
         let imgLogo = new Laya.Image('local/loading/logo.png')
         imgLogo.centerX = 0
-        imgLogo.top = 295
+        imgLogo.top = 100
         box.addChild(imgLogo)
 
         let imgProgressBg = new Laya.Image('local/loading/progress-bg.png')
         imgProgressBg.centerX = 0
-        imgProgressBg.bottom = 122
+        imgProgressBg.bottom = 60
         box.addChild(imgProgressBg)
-
-        let lblTips = new Laya.Label('玩游戏享乐趣,好友都在玩的小游戏乐园')
+        this._imgProgressBg=imgProgressBg;     
+      /*   let lblTips = new Laya.Label('玩游戏享乐趣,好友都在玩的小游戏乐园')
         lblTips.color = '#227fb3'
         lblTips.fontSize = 28
         lblTips.centerX = 0
         lblTips.bottom = 70
-        box.addChild(lblTips)
+        box.addChild(lblTips) */
 
         let imgProgress = new Laya.Image('local/loading/progress-bar.png')
         imgProgress.centerX = 0
-        imgProgress.bottom = 122
+        imgProgress.bottom = 80
         this.addChild(imgProgress)
         this._imgProgress = imgProgress
 
@@ -54,7 +62,7 @@ export default class LaunchScreenView extends Laya.View {
         lblProgress.color = '#ffffff'
         lblProgress.fontSize = 30
         lblProgress.centerX = 0
-        lblProgress.y = 1159
+        lblProgress.bottom =76 
         this.addChild(lblProgress)
         this._lblProgress = lblProgress
     }
@@ -79,16 +87,28 @@ export default class LaunchScreenView extends Laya.View {
         this.ins._lblProgress.text = tip
     }
 
-    static show() {
+    static show(portrait) {
         let view = new LaunchScreenView()
-        Navigator.adjustViewPosition(view)
+        Navigator.adjustViewPosition(view,portrait)
         view.zOrder = 999
         Laya.stage.addChild(view)
         this.ins = view
+        if(portrait==undefined||portrait){
+            this.ins._portrait=true;
+        }else{
+            this.ins._portrait=false;
+        }
     }
     static hide() {
         if (this.ins) {
             this.ins.destroy()
         }
     }
+    static hideProgress(){
+        if(this.ins){
+           this.ins._imgProgressBg.visible=false;
+           this.ins._imgProgress.visible=false;
+           this.ins._lblProgress.visible=false;
+        }
+   }
 }

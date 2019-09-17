@@ -80,7 +80,7 @@ export default class Component extends Laya.Script {
     }
     /**移除socket的事件监听 */
     private offMessageListener() {
-        this.socket.offAllCaller(this)
+        this.socket&&this.socket.offAllCaller(this)
     }
     /**向socket发送消息 */
     sendMessage(cmd: string, params: any) {

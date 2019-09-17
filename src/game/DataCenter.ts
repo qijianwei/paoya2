@@ -19,8 +19,8 @@ export default class DataCenter {
     static qqViewId:number //QQ平台展示Banner广告的类型
     static gameStartTime:number //游戏开始时间
     /**CDN资源地址 */
-    static CDNURL: string = 'https://res.xingqiu123.com/'
-    static RESURL: string = 'https://res.xingqiu123.com/'
+    static CDNURL: string = 'https://xgamejuedixiaomie.goxiaochengxu.cn/'
+    static RESURL: string = 'https://xgamejuedixiaomie.goxiaochengxu.cn/'
 
     static showBannerAdWhenDialogPopup = true
 
@@ -33,7 +33,8 @@ export default class DataCenter {
     static rmb: Observer = new Observer()
     /**用户积分变更监听 */
     static integral: Observer = new Observer()
-
+     /**用户钻石变更监听 */
+    static diamond :Observer=new Observer()
     /**通过天梯ID获取天梯 */
     static findLadderById(id) {
         let result = this.loginData.config_list.game.ladder_config.filter((item) => {
@@ -81,6 +82,14 @@ export default class DataCenter {
             if (res.integral != undefined){
                 this.integral.value = res.integral
                 this.user.integral = res.integral
+            }
+            if (res.gold != undefined) {
+                this.gold.value = res.gold;
+                this.user.gold = res.gold;
+            }
+            if (res.diamond != undefined) {
+                this.diamond.value = res.diamond;
+                this.user.diamond = res.diamond;
             }
         }, (res) => {
             console.warn('更新用户信息失败')

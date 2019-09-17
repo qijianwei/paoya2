@@ -33,6 +33,9 @@ export default class Main extends Game {
         if (!params.zone) {
             console.error("初始化时必须传入zone")
         }
+        if(params.useSocket==undefined){
+            params.useSocket=false;
+        }
         this.gameId = params.gameId
         this.params.rankingType = this.params.rankingType || RankingType.Score
         if (this.params.showBannerAdWhenDialogPopup != undefined) {
@@ -64,20 +67,30 @@ export default class Main extends Game {
     }
 
     loadRes() {
-        let _this = this
-        let connectWebsocket = function () {
-            LaunchScreenView.setTips('正在连接...')
-            _this._initClient(function () {
+        let _this = this, connectWebsocket = null;
+        if (!this.params.useSocket) {
+            connectWebsocket = function () {
                 LaunchScreenView.setTips('准备就绪')
                 _this.setupLoadingView(() => {
                     _this.initRootScene(_this.launchOption, _this.isFirstLaunch)
                     LaunchScreenView.hide()
                 })
-            }, function () {
-                Toast.showModal('提示', '连接服务器失败', '重试', function () {
-                    _this.socket.connect()
+            }
+        } else {
+            connectWebsocket = function () {
+                LaunchScreenView.setTips('正在连接...')
+                _this._initClient(function () {
+                    LaunchScreenView.setTips('准备就绪')
+                    _this.setupLoadingView(() => {
+                        _this.initRootScene(_this.launchOption, _this.isFirstLaunch)
+                        LaunchScreenView.hide()
+                    })
+                }, function () {
+                    Toast.showModal('提示', '连接服务器失败', '重试', function () {
+                        _this.socket.connect()
+                    })
                 })
-            })
+            }
         }
         let login = function (suc) {
             LaunchScreenView.setTips('正在登录...')
@@ -242,6 +255,7 @@ export default class Main extends Game {
     }
 
     _onShow(res) {
+        SoundManager.onShow()
         if (!this.socket) return
         this.isFirstLaunch = false
         this.launchOption = res
@@ -262,15 +276,14 @@ export default class Main extends Game {
             this.socket._startReconnect()
         }
         this.navigator._onShow(res)
-        this.onShow(res)
-        SoundManager.onShow()
+        this.onShow(res)   
     }
 
     _onHide(res) {
-        if (!this.socket) return
-        this.navigator._onHide(res)
-        this.onHide(res)
         SoundManager.onHide()
+        this.navigator._onHide(res)
+        if (!this.socket) return  
+        this.onHide(res) 
     }
 
     /**当游戏进入前台时触发 */

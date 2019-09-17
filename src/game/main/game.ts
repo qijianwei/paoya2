@@ -44,8 +44,15 @@ export default class Game extends Laya.EventDispatcher {
     }
     /**初始化Laya引擎，子类可重写此方法，实现自己的界面展示 */
     initLaya() {
-        let width = this.params.width || 750
-        let height = this.params.height || 1334
+        let width=0,height=0;
+        if (this.params.portrait == undefined || this.params.portrait) {
+             width = this.params.width || 750
+             height = this.params.height || 1334
+        } else {
+             width = this.params.width || 1334
+             height = this.params.height || 750
+        }
+        
         let config = this.params
         if (window['Laya3D']) {
             Laya3D.init(width, height)
@@ -65,13 +72,14 @@ export default class Game extends Laya.EventDispatcher {
         //屏幕适配相关
         let stage = Laya.stage
         let Stage = Laya.Stage
-        stage.scaleMode = config.scaleMode || Stage.SCALE_FIXED_WIDTH
         stage.alignH = config.alignH || Stage.ALIGN_CENTER
         stage.alignV = config.alignV || Stage.ALIGN_MIDDLE
         if (config.portrait == undefined || config.portrait) {
             stage.screenMode = Stage.SCREEN_VERTICAL
+            stage.scaleMode = config.scaleMode || Stage.SCALE_FIXED_WIDTH
         } else {
             stage.screenMode = Stage.SCREEN_HORIZONTAL
+            stage.scaleMode = config.scaleMode || Stage.SCALE_FIXED_HEIGHT;
         }
         // stage.frameRate = Stage.FRAME_MOUSE;
 
@@ -82,7 +90,7 @@ export default class Game extends Laya.EventDispatcher {
         this._setupResLoadConfig()
         //激活资源版本控制，version.json由IDE发布功能自动生成，如果没有也不影响后续流程
         Laya.ResourceVersion.enable("version.json", Laya.Handler.create(this, function () {
-            LaunchScreenView.show()
+            LaunchScreenView.show(this.params.portrait)
             Laya.AtlasInfoManager.enable('fileconfig.json', Laya.Handler.create(this, this.loadRes))
         }), Laya.ResourceVersion.FILENAME_VERSION); 
     }
@@ -95,10 +103,15 @@ export default class Game extends Laya.EventDispatcher {
     }
     configNavigator() {
         PaoYa.navigator = this.navigator = new Navigator()
-        let view = Laya.Scene.root
-        if (view) {
+        let view = Laya.Scene.root,portrait=true;
+        if(this.params.portrait==undefined||this.params.portrait){
+            portrait=true;
+        }else{
+            portrait=false;
+        }
+        if (view) {     
             let resize = function () {
-                Navigator.adjustViewPosition(this)
+                Navigator.adjustViewPosition(this,portrait)
             }
             view.on(Laya.Event.RESIZE, view, resize)
             resize.call(view)

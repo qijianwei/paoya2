@@ -365,7 +365,7 @@ var Component = /** @class */ (function (_super) {
     };
     /**移除socket的事件监听 */
     Component.prototype.offMessageListener = function () {
-        this.socket.offAllCaller(this);
+        this.socket && this.socket.offAllCaller(this);
     };
     /**向socket发送消息 */
     Component.prototype.sendMessage = function (cmd, params) {
@@ -1444,13 +1444,21 @@ var DataCenter = /** @class */ (function () {
                 _this.integral.value = res.integral;
                 _this.user.integral = res.integral;
             }
+            if (res.gold != undefined) {
+                _this.gold.value = res.gold;
+                _this.user.gold = res.gold;
+            }
+            if (res.diamond != undefined) {
+                _this.diamond.value = res.diamond;
+                _this.user.diamond = res.diamond;
+            }
         }, function (res) {
             console.warn('更新用户信息失败');
         });
     };
     /**CDN资源地址 */
-    DataCenter.CDNURL = 'https://res.xingqiu123.com/';
-    DataCenter.RESURL = 'https://res.xingqiu123.com/';
+    DataCenter.CDNURL = 'https://xgamejuedixiaomie.goxiaochengxu.cn/';
+    DataCenter.RESURL = 'https://xgamejuedixiaomie.goxiaochengxu.cn/';
     DataCenter.showBannerAdWhenDialogPopup = true;
     /**用户金币数变更监听 */
     DataCenter.gold = new _core_Observer__WEBPACK_IMPORTED_MODULE_1__["default"]();
@@ -1458,6 +1466,8 @@ var DataCenter = /** @class */ (function () {
     DataCenter.rmb = new _core_Observer__WEBPACK_IMPORTED_MODULE_1__["default"]();
     /**用户积分变更监听 */
     DataCenter.integral = new _core_Observer__WEBPACK_IMPORTED_MODULE_1__["default"]();
+    /**用户钻石变更监听 */
+    DataCenter.diamond = new _core_Observer__WEBPACK_IMPORTED_MODULE_1__["default"]();
     return DataCenter;
 }());
 /* harmony default export */ __webpack_exports__["default"] = (DataCenter);
@@ -2605,15 +2615,22 @@ var Navigator = /** @class */ (function (_super) {
             cb && cb();
         }));
     };
-    Navigator.adjustViewPosition = function (view) {
+    Navigator.adjustViewPosition = function (view, portrait) {
         var stage = Laya.stage;
         var screenWidth = Laya.Browser.width;
         var screenHeight = Laya.Browser.height;
         var width = stage.designWidth;
         var height = stage.designHeight;
-        var scaleX = screenWidth / width;
-        var y = (screenHeight - height * scaleX >> 1) / scaleX;
-        view.y = Math.floor(y);
+        if (portrait == undefined || portrait) {
+            var scaleX = screenWidth / width;
+            var y = (screenHeight - height * scaleX >> 1) / scaleX;
+            view.y = Math.floor(y);
+        }
+        else {
+            var scaleY = screenHeight / height;
+            var x = (screenWidth - width * scaleY >> 1) / scaleY;
+            view.x = Math.floor(x);
+        }
     };
     /**================= dispatch system event =================**/
     Navigator.prototype._onReceiveMessage = function (cmd, value, code, message) {
@@ -3213,6 +3230,9 @@ var Main = /** @class */ (function (_super) {
         if (!params.zone) {
             console.error("初始化时必须传入zone");
         }
+        if (params.useSocket == undefined) {
+            params.useSocket = false;
+        }
         _this_1.gameId = params.gameId;
         _this_1.params.rankingType = _this_1.params.rankingType || _enums__WEBPACK_IMPORTED_MODULE_11__["RankingType"].Score;
         if (_this_1.params.showBannerAdWhenDialogPopup != undefined) {
@@ -3240,21 +3260,32 @@ var Main = /** @class */ (function (_super) {
         this.setupOthers();
     };
     Main.prototype.loadRes = function () {
-        var _this = this;
-        var connectWebsocket = function () {
-            _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_17__["default"].setTips('正在连接...');
-            _this._initClient(function () {
+        var _this = this, connectWebsocket = null;
+        if (!this.params.useSocket) {
+            connectWebsocket = function () {
                 _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_17__["default"].setTips('准备就绪');
                 _this.setupLoadingView(function () {
                     _this.initRootScene(_this.launchOption, _this.isFirstLaunch);
                     _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_17__["default"].hide();
                 });
-            }, function () {
-                _wx_Toast__WEBPACK_IMPORTED_MODULE_1__["default"].showModal('提示', '连接服务器失败', '重试', function () {
-                    _this.socket.connect();
+            };
+        }
+        else {
+            connectWebsocket = function () {
+                _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_17__["default"].setTips('正在连接...');
+                _this._initClient(function () {
+                    _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_17__["default"].setTips('准备就绪');
+                    _this.setupLoadingView(function () {
+                        _this.initRootScene(_this.launchOption, _this.isFirstLaunch);
+                        _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_17__["default"].hide();
+                    });
+                }, function () {
+                    _wx_Toast__WEBPACK_IMPORTED_MODULE_1__["default"].showModal('提示', '连接服务器失败', '重试', function () {
+                        _this.socket.connect();
+                    });
                 });
-            });
-        };
+            };
+        }
         var login = function (suc) {
             _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_17__["default"].setTips('正在登录...');
             _service_LoginService__WEBPACK_IMPORTED_MODULE_13__["default"].login(suc, function () {
@@ -3415,6 +3446,7 @@ var Main = /** @class */ (function (_super) {
         }
     };
     Main.prototype._onShow = function (res) {
+        _laya_sound__WEBPACK_IMPORTED_MODULE_15__["default"].onShow();
         if (!this.socket)
             return;
         this.isFirstLaunch = false;
@@ -3438,14 +3470,13 @@ var Main = /** @class */ (function (_super) {
         }
         this.navigator._onShow(res);
         this.onShow(res);
-        _laya_sound__WEBPACK_IMPORTED_MODULE_15__["default"].onShow();
     };
     Main.prototype._onHide = function (res) {
+        _laya_sound__WEBPACK_IMPORTED_MODULE_15__["default"].onHide();
+        this.navigator._onHide(res);
         if (!this.socket)
             return;
-        this.navigator._onHide(res);
         this.onHide(res);
-        _laya_sound__WEBPACK_IMPORTED_MODULE_15__["default"].onHide();
     };
     /**当游戏进入前台时触发 */
     Main.prototype.onShow = function (res) {
@@ -3544,8 +3575,15 @@ var Game = /** @class */ (function (_super) {
     });
     /**初始化Laya引擎，子类可重写此方法，实现自己的界面展示 */
     Game.prototype.initLaya = function () {
-        var width = this.params.width || 750;
-        var height = this.params.height || 1334;
+        var width = 0, height = 0;
+        if (this.params.portrait == undefined || this.params.portrait) {
+            width = this.params.width || 750;
+            height = this.params.height || 1334;
+        }
+        else {
+            width = this.params.width || 1334;
+            height = this.params.height || 750;
+        }
         var config = this.params;
         if (window['Laya3D']) {
             Laya3D.init(width, height);
@@ -3564,14 +3602,15 @@ var Game = /** @class */ (function (_super) {
         //屏幕适配相关
         var stage = Laya.stage;
         var Stage = Laya.Stage;
-        stage.scaleMode = config.scaleMode || Stage.SCALE_FIXED_WIDTH;
         stage.alignH = config.alignH || Stage.ALIGN_CENTER;
         stage.alignV = config.alignV || Stage.ALIGN_MIDDLE;
         if (config.portrait == undefined || config.portrait) {
             stage.screenMode = Stage.SCREEN_VERTICAL;
+            stage.scaleMode = config.scaleMode || Stage.SCALE_FIXED_WIDTH;
         }
         else {
             stage.screenMode = Stage.SCREEN_HORIZONTAL;
+            stage.scaleMode = config.scaleMode || Stage.SCALE_FIXED_HEIGHT;
         }
         // stage.frameRate = Stage.FRAME_MOUSE;
         var sprite = new Laya.Sprite();
@@ -3581,7 +3620,7 @@ var Game = /** @class */ (function (_super) {
         this._setupResLoadConfig();
         //激活资源版本控制，version.json由IDE发布功能自动生成，如果没有也不影响后续流程
         Laya.ResourceVersion.enable("version.json", Laya.Handler.create(this, function () {
-            _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_5__["default"].show();
+            _view_LaunchScreenView__WEBPACK_IMPORTED_MODULE_5__["default"].show(this.params.portrait);
             Laya.AtlasInfoManager.enable('fileconfig.json', Laya.Handler.create(this, this.loadRes));
         }), Laya.ResourceVersion.FILENAME_VERSION);
     };
@@ -3594,10 +3633,16 @@ var Game = /** @class */ (function (_super) {
     };
     Game.prototype.configNavigator = function () {
         _paoya__WEBPACK_IMPORTED_MODULE_2__["default"].navigator = this.navigator = new _core_navigator_Navigator__WEBPACK_IMPORTED_MODULE_4__["default"]();
-        var view = Laya.Scene.root;
+        var view = Laya.Scene.root, portrait = true;
+        if (this.params.portrait == undefined || this.params.portrait) {
+            portrait = true;
+        }
+        else {
+            portrait = false;
+        }
         if (view) {
             var resize = function () {
-                _core_navigator_Navigator__WEBPACK_IMPORTED_MODULE_4__["default"].adjustViewPosition(this);
+                _core_navigator_Navigator__WEBPACK_IMPORTED_MODULE_4__["default"].adjustViewPosition(this, portrait);
             };
             view.on(Laya.Event.RESIZE, view, resize);
             resize.call(view);
@@ -3776,30 +3821,38 @@ var LaunchScreenView = /** @class */ (function (_super) {
         return _this;
     }
     LaunchScreenView.prototype.setup = function () {
-        this.size(750, 1334);
         var box = new Laya.Box();
-        box.size(750, 1334);
+        if (this._portrait) {
+            this.size(750, 1334);
+            box.size(750, 1334);
+        }
+        else {
+            this.size(1334, 750);
+            box.size(1334, 750);
+        }
         box.cacheAs = 'normal';
         this.addChild(box);
-        var imgBg = new Laya.Image('local/loading/bg.png');
+        var imgBg = new Laya.Image('local/loading/bg.jpg');
+        imgBg.x = -150;
         box.addChild(imgBg);
         var imgLogo = new Laya.Image('local/loading/logo.png');
         imgLogo.centerX = 0;
-        imgLogo.top = 295;
+        imgLogo.top = 100;
         box.addChild(imgLogo);
         var imgProgressBg = new Laya.Image('local/loading/progress-bg.png');
         imgProgressBg.centerX = 0;
-        imgProgressBg.bottom = 122;
+        imgProgressBg.bottom = 60;
         box.addChild(imgProgressBg);
-        var lblTips = new Laya.Label('玩游戏享乐趣,好友都在玩的小游戏乐园');
-        lblTips.color = '#227fb3';
-        lblTips.fontSize = 28;
-        lblTips.centerX = 0;
-        lblTips.bottom = 70;
-        box.addChild(lblTips);
+        this._imgProgressBg = imgProgressBg;
+        /*   let lblTips = new Laya.Label('玩游戏享乐趣,好友都在玩的小游戏乐园')
+          lblTips.color = '#227fb3'
+          lblTips.fontSize = 28
+          lblTips.centerX = 0
+          lblTips.bottom = 70
+          box.addChild(lblTips) */
         var imgProgress = new Laya.Image('local/loading/progress-bar.png');
         imgProgress.centerX = 0;
-        imgProgress.bottom = 122;
+        imgProgress.bottom = 80;
         this.addChild(imgProgress);
         this._imgProgress = imgProgress;
         var mask = new Laya.Sprite();
@@ -3810,7 +3863,7 @@ var LaunchScreenView = /** @class */ (function (_super) {
         lblProgress.color = '#ffffff';
         lblProgress.fontSize = 30;
         lblProgress.centerX = 0;
-        lblProgress.y = 1159;
+        lblProgress.bottom = 76;
         this.addChild(lblProgress);
         this._lblProgress = lblProgress;
     };
@@ -3837,16 +3890,29 @@ var LaunchScreenView = /** @class */ (function (_super) {
     LaunchScreenView.setTips = function (tip) {
         this.ins._lblProgress.text = tip;
     };
-    LaunchScreenView.show = function () {
+    LaunchScreenView.show = function (portrait) {
         var view = new LaunchScreenView();
-        _core_navigator_Navigator__WEBPACK_IMPORTED_MODULE_0__["default"].adjustViewPosition(view);
+        _core_navigator_Navigator__WEBPACK_IMPORTED_MODULE_0__["default"].adjustViewPosition(view, portrait);
         view.zOrder = 999;
         Laya.stage.addChild(view);
         this.ins = view;
+        if (portrait == undefined || portrait) {
+            this.ins._portrait = true;
+        }
+        else {
+            this.ins._portrait = false;
+        }
     };
     LaunchScreenView.hide = function () {
         if (this.ins) {
             this.ins.destroy();
+        }
+    };
+    LaunchScreenView.hideProgress = function () {
+        if (this.ins) {
+            this.ins._imgProgressBg.visible = false;
+            this.ins._imgProgress.visible = false;
+            this.ins._lblProgress.visible = false;
         }
     };
     return LaunchScreenView;
@@ -4440,7 +4506,7 @@ Laya.Node.prototype.addClickListener = function (caller, method, throttle, fail)
             return;
         }
         var now = Date.now(), time = caller[LAST_CLICK_TIME] || 0, delta = now - time;
-        if (delta > 1000) {
+        if (delta > 500) {
             method.call(caller, args);
         }
         else {

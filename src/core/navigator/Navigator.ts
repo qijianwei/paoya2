@@ -196,15 +196,21 @@ export default class Navigator extends Laya.EventDispatcher {
             cb && cb()
         }))
     }
-    static adjustViewPosition(view) {
+    static adjustViewPosition(view,portrait) {
         var stage = Laya.stage
         var screenWidth = Laya.Browser.width
         var screenHeight = Laya.Browser.height
         var width = stage.designWidth
         var height = stage.designHeight
-        var scaleX = screenWidth / width
-        var y = (screenHeight - height * scaleX >> 1) / scaleX
-        view.y = Math.floor(y)
+        if(portrait==undefined||portrait){
+            var scaleX = screenWidth / width
+            var y = (screenHeight - height * scaleX >> 1) / scaleX
+            view.y = Math.floor(y)
+        }else{
+            var scaleY=screenHeight/height;
+            var x=(screenWidth-width*scaleY>>1)/scaleY;
+            view.x=Math.floor(x);
+        }     
     }
 
     /**================= dispatch system event =================**/

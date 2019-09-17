@@ -109,6 +109,7 @@ interface UserInfo {
     gold: number
     rmb: string
     integral: number
+    diamond:number
     nickname: string
     id: number
     avstar: string
