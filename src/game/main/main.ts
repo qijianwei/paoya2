@@ -94,6 +94,7 @@ export default class Main extends Game {
         }
         let login = function (suc) {
             LaunchScreenView.setTips('正在登录...')
+            LaunchScreenView.hideProgress();
             LoginService.login(suc, function () {
                 Toast.showModal('提示', '登录失败', '重试', function () {
                     login(suc)

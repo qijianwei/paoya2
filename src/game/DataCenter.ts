@@ -16,6 +16,8 @@ export default class DataCenter {
     static user: UserInfo
     static adUnitId:string
     static bannerUnitId:string //微信平台Banner的
+    static interstitialUnitId:string//微信平台插屏广告
+    static adUnitIdLong:string
     static qqViewId:number //QQ平台展示Banner广告的类型
     static gameStartTime:number //游戏开始时间
     /**CDN资源地址 */

@@ -25,6 +25,7 @@ export { default as Toast } from './wx/Toast'
 export { default as Utils } from './utils/utils'
 export { default as RewardedVideoAd } from './wx/ad/rewardedVideoAd'
 export { default as BannerAd } from './wx/ad/bannerAd'
+export {default as InterstitialAd} from './wx/ad/interstitialAd'
 
 import './utils/Array'
 import './utils/Date'

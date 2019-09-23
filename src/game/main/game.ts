@@ -29,9 +29,11 @@ export default class Game extends Laya.EventDispatcher {
 
         this.initLaya()
         //初始化导航控制器
-        DataCenter.RESURL = `https://res.xingqiu123.com/${this.gameId}/`
+        DataCenter.RESURL = `https://xgamejuedixiaomie.goxiaochengxu.cn/${this.gameId}/`
         DataCenter.adUnitId = params.adUnitId
         DataCenter.bannerUnitId = params.bannerUnitId
+        DataCenter.interstitialUnitId=params.interstitialUnitId
+        DataCenter.adUnitIdLong=params.adUnitIdLong
         DataCenter.qqViewId = params.qqViewId || 1003
         this.configNavigator()
         this.setupConfig()
@@ -131,7 +133,7 @@ export default class Game extends Laya.EventDispatcher {
             if (Laya.URL['formatURLCopy']) {
                 url = Laya.URL['formatURLCopy'](url)
             }
-            if (this.loadNetworkRes && url.indexOf('remote/') >= 0 && url.indexOf('http') < 0){
+            if (this.loadNetworkRes && (url.indexOf('remote/') >= 0||url.indexOf('font/') >= 0) && url.indexOf('http') < 0){
                 url = DataCenter.RESURL + url
             }
             return url

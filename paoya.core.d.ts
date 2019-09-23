@@ -247,6 +247,8 @@ declare interface GameConfig {
     /**广告ID */
     adUnitId: string
     bannerUnitId: string
+    interstitialUnitId:string
+    adUnitIdLong:string
     qqViewId: number
     showBannerAdWhenDialogPopup: boolean
 }
@@ -820,7 +822,8 @@ declare module PaoYa {
          *      onError  //广告加载失败时调用
          *      onClose  //广告关闭时调用
          * }
+         * @param isLong 是否需要30秒广告，默认false
          */
-        static show(params)
+        static show(params,isLong)
     }
 }

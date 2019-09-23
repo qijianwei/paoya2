@@ -51,14 +51,21 @@ export default class RewardedVideoAd extends Laya.EventDispatcher {
             }
         }
     }
-    static show(params) {
+    static show(params,isLong?:boolean) {
         if (window['wx'] && !DataCenter.adUnitId) {
             console.error('请在Main中设置adUnitId之后再观看广告')
             return
         }
-        if (!this.ad) {
-            this.ad = new RewardedVideoAd({ adUnitId: DataCenter.adUnitId })
+        if(isLong==undefined||!isLong){
+            if (!this.ad) {
+                this.ad = new RewardedVideoAd({ adUnitId: DataCenter.adUnitId })
+            }  
+        }else{     
+            if (!this.ad) {
+                this.ad = new RewardedVideoAd({ adUnitId: DataCenter.adUnitIdLong })
+            }     
         }
+        
         let ad = this.ad
         ad.offAllCaller(this)
         ad.on(this.LOAD, this, params.onLoad)
