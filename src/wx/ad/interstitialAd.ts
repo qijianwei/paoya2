@@ -42,7 +42,9 @@ export default class InterstitialAd extends Laya.EventDispatcher {
             this.interstitialAd.show()
         } else {
             if (this.isLoaded){
-                this.interstitialAd.show()
+                this.interstitialAd.show().then(null,res=>{
+                    this.event(InterstitialAd.ERROR, res)
+                })
             } else {
                 this.interstitialAd.load()
                 this.once(InterstitialAd.LOAD,this,function(){
@@ -55,6 +57,10 @@ export default class InterstitialAd extends Laya.EventDispatcher {
         }
     }
     static show(params) {
+        if(!window['wx']){
+            params.onError&&params.onError();
+            return;
+        }
         if (window['wx'] && !DataCenter.interstitialUnitId) {
             console.error('请在Main中设置interstitialUnitId之后再观看广告')
             return

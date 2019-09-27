@@ -4443,12 +4443,15 @@ var InterstitialAd = /** @class */ (function (_super) {
         this.interstitialAd = interstitialAd;
     };
     InterstitialAd.prototype.show = function () {
+        var _this_1 = this;
         if (window['BK']) {
             this.interstitialAd.show();
         }
         else {
             if (this.isLoaded) {
-                this.interstitialAd.show();
+                this.interstitialAd.show().then(null, function (res) {
+                    _this_1.event(InterstitialAd.ERROR, res);
+                });
             }
             else {
                 this.interstitialAd.load();
@@ -4462,6 +4465,10 @@ var InterstitialAd = /** @class */ (function (_super) {
         }
     };
     InterstitialAd.show = function (params) {
+        if (!window['wx']) {
+            params.onError && params.onError();
+            return;
+        }
         if (window['wx'] && !_export__WEBPACK_IMPORTED_MODULE_0__["DataCenter"].interstitialUnitId) {
             console.error('请在Main中设置interstitialUnitId之后再观看广告');
             return;
