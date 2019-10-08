@@ -4628,14 +4628,14 @@ Laya.Node.prototype.addClickListener = function (caller, method, throttle, fail)
             return;
         }
         var now = Date.now(), time = caller[LAST_CLICK_TIME] || 0, delta = now - time;
-        if (delta > 500) {
-            method.call(caller, args);
-        }
-        else {
+        if (delta < 300) {
             fail && fail.call(caller, '操作速度过快');
             console.warn('操作点击过快');
         }
-        caller[LAST_CLICK_TIME] = now;
+        else {
+            caller[LAST_CLICK_TIME] = now;
+            method.call(caller, args);
+        }
     });
 };
 Laya.Node.prototype.dispatchLifeCycleEvent = function (method, p1, p2, p3, p4, p5) {
