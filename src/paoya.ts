@@ -9,7 +9,7 @@ class PaoYa {
     networkMonitor: NetworkMonitor
     lifeCircleMonitor: LifeCircleMonitor
     socket: Client
-    game: Main
+    game: Main 
 }
 const paoya = new PaoYa()
 export default paoya as PaoYa

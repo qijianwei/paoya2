@@ -20,6 +20,8 @@ export default class DataCenter {
     static adUnitIdLong:string
     static qqViewId:number //QQ平台展示Banner广告的类型
     static gameStartTime:number //游戏开始时间
+
+    static userInfoAuth:boolean //用户信息是否授权
     /**CDN资源地址 */
     static CDNURL: string = 'https://xgamejuedixiaomie.goxiaochengxu.cn/'
     static RESURL: string = 'https://xgamejuedixiaomie.goxiaochengxu.cn/'

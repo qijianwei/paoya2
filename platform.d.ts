@@ -138,6 +138,8 @@ interface PaymentObject {
 }
 interface AuthObject {
     scope: string,
+    isNecessary:boolean,
+    next:Function,
     success: Function,
     fail: Function,
     alert: Function
