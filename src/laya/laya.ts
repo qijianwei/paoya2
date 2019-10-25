@@ -107,7 +107,7 @@ Laya.Scene.load = function (url, complete, progress) {
         } else {
             scene = new clas();
         }
-        if (scene && (scene instanceof laya.display.Node)) {
+        if (scene && (scene instanceof Laya.Node)) {
             scene.url = url;
             if (!scene._getBit(/*laya.Const.NOT_READY*/0x08)) {
                 complete && complete.runWith(scene)
