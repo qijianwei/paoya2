@@ -13,7 +13,7 @@ export default class InterstitialAd extends Laya.EventDispatcher {
     }
     createAd(params) {
         let _this = this
-        let interstitialAd = wx.createInterstitialAd({ adUnitId: params.adUnitId })
+        let interstitialAd = py.createInterstitialAd({ adUnitId: params.adUnitId })
         interstitialAd.onLoad(function (res) {
             _this.isLoaded = true
             _this.event(InterstitialAd.LOAD, res)
@@ -57,10 +57,10 @@ export default class InterstitialAd extends Laya.EventDispatcher {
         }
     }
     static show(params) {
-        if(!window['wx']){
+       /*  if(!window['wx']){
             params.onError&&params.onError();
             return;
-        }
+        } */
         if (window['wx'] && !DataCenter.interstitialUnitId) {
             console.error('请在Main中设置interstitialUnitId之后再观看广告')
             return

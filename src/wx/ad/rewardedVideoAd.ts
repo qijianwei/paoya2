@@ -13,7 +13,7 @@ export default class RewardedVideoAd extends Laya.EventDispatcher {
     }
     createAd(params) {
         let _this = this
-        let videoAd = py.createRewardedVideoAd({ adUnitId: params.adUnitId })
+        let videoAd = py.createRewardedVideoAd({ adUnitId: params.adUnitId,appSid:DataCenter.appSid })
         videoAd.onLoad(function (res) {
             _this.isLoaded = true
             _this.event(RewardedVideoAd.LOAD, res)
@@ -58,11 +58,11 @@ export default class RewardedVideoAd extends Laya.EventDispatcher {
         }
         if(isLong==undefined||!isLong){
             if (!this.ad) {
-                this.ad = new RewardedVideoAd({ adUnitId: DataCenter.adUnitId })
+                this.ad = new RewardedVideoAd({ adUnitId: DataCenter.adUnitId,appSid:DataCenter.appSid })
             }  
         }else{     
             if (!this.ad) {
-                this.ad = new RewardedVideoAd({ adUnitId: DataCenter.adUnitIdLong })
+                this.ad = new RewardedVideoAd({ adUnitId: DataCenter.adUnitIdLong,appSid:DataCenter.appSid })
             }     
         }
         

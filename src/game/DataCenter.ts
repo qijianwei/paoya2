@@ -19,6 +19,7 @@ export default class DataCenter {
     static interstitialUnitId:string//微信平台插屏广告
     static adUnitIdLong:string
     static qqViewId:number //QQ平台展示Banner广告的类型
+    static appSid:string //百度广告 应用 ID
     static gameStartTime:number //游戏开始时间
 
     static userInfoAuth:boolean //用户信息是否授权

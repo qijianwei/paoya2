@@ -35,6 +35,7 @@ export default class Game extends Laya.EventDispatcher {
         DataCenter.interstitialUnitId=params.interstitialUnitId
         DataCenter.adUnitIdLong=params.adUnitIdLong
         DataCenter.qqViewId = params.qqViewId || 1003
+        DataCenter.appSid=params.appSid
         this.configNavigator()
         this.setupConfig()
         this.initLaunchOption()

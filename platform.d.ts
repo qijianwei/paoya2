@@ -6,9 +6,9 @@ declare interface PlatformInterface {
     isMiniGame(): boolean
     login(params: LoginObject, cb: (res: LoginSuccessObject) => void)
     auth(params: AuthObject)
-    getUserInfo(params: GetUserInfoObject)
+    getUserInfo(params:GetUserInfoObject)
 
-    stopGame(result: GameResult)
+    stopGame?(result: GameResult)
 
     onShow(listener: (res: LaunchOption) => void)
     offShow(listener)
@@ -27,7 +27,7 @@ declare interface PlatformInterface {
     getUpdateManager(): UpdateManager
 
     /**Andriod 发送游戏快捷方式到桌面 */
-    createShortCut(info: object)
+    createShortCut?(info: object)
 
     navigateToMiniProgram(params: NavigateToMiniProgramObject)
     exit(params?: any)
@@ -55,7 +55,8 @@ declare interface PlatformInterface {
     /**广告 */
     createBannerAd(params: BannerAdObject): BannerAd
     createRewardedVideoAd(params: RewardedVideoAdObject): RewardedVideoAd
-
+    createInterstitialAd(params: InterstitialAdObject): InterstitialAd
+    
     /**以下接口只针对微信有效 */
     setUserCloudStorage(params: UserCloudStorageObject): void
     openCustomerServiceConversation()
@@ -63,8 +64,8 @@ declare interface PlatformInterface {
     setClipboardData(params: ClipboardDataObject)
 
     /**QQ特有接口 */
-    requestFriendRankList(p: FriendRankList)
-    uploadScore(p: UploadScoreObject)
+    requestFriendRankList?(p: FriendRankList)
+    uploadScore?(p:UploadScoreObject)
 }
 
 declare class UpdateManager {
@@ -74,7 +75,7 @@ declare class UpdateManager {
     applyUpdate()
 }
 interface GetUserInfoObject {
-    openId: string
+    openId:string
 }
 interface FailObject {
     errMsg: string
@@ -104,8 +105,8 @@ declare interface GameResult {
     result: Array<ScoreData>
 }
 interface BaseObject {
-    success?: (res?: any) => void
-    fail?: (res: FailObject) => void
+    success?: (res?:any) => void
+    fail?: (res:FailObject) => void
     complete?: () => void
 }
 interface LaunchExtraData {
@@ -316,10 +317,12 @@ interface BannerAd {
     onError(listener)
     /**取消监听 banner 广告错误事件 */
     offError(listener)
+    listenerError : Function
 }
 interface RewardedVideoAdObject {
     /**广告单元 id */
     adUnitId: string
+    appSid?:string
 }
 interface RewardedVideoAd {
     /**隐藏激励视频广告 */
@@ -338,6 +341,30 @@ interface RewardedVideoAd {
     onClose(listener)
     /**取消监听用户点击 关闭广告 按钮的事件 */
     offClose(listener)
+    listenerError : Function
+}
+interface InterstitialAdObject {
+    /**广告单元 id */
+    adUnitId: string
+}
+interface InterstitialAd {
+    /**隐藏激励视频广告 */
+    load(): Promise<any>
+    /**显示激励视频广告。激励视频广告将从屏幕下方推入 */
+    show(): Promise<any>
+    /**监听激励视频广告加载事件 */
+    onLoad(listener)
+    /**取消监听激励视频广告加载事件 */
+    offLoad(listener)
+    /**监听激励视频错误事件 */
+    onError(listener)
+    /**取消监听激励视频错误事件 */
+    offError(listener)
+    /**监听用户点击 关闭广告 按钮的事件 */
+    onClose(listener)
+    /**取消监听用户点击 关闭广告 按钮的事件 */
+    offClose(listener)
+    listenerError : Function
 }
 interface NavigateToMiniProgramObject {
     /**
@@ -436,13 +463,13 @@ interface FriendRankListSuccess {
 }
 interface FriendRankList {
     success: (res: FriendRankListSuccess) => void
-    fail: (res: FailObject) => void
+    fail: (res:FailObject) => void
 }
-interface UploadScoreObject extends BaseObject {
+interface UploadScoreObject extends BaseObject{
     /**用户分数 */
-    score: number
+    score:number
     /**必填，游戏开始时间，单位为毫秒,结束时间已在SDK中处理，开发者不用关心 */
-    startTime: number
+    startTime:number
 }
 interface KeepScreenOnObject {
     /**

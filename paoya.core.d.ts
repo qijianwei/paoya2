@@ -250,6 +250,7 @@ declare interface GameConfig {
     interstitialUnitId:string
     adUnitIdLong:string
     qqViewId: number
+    appSid:string
     showBannerAdWhenDialogPopup: boolean
 }
 
